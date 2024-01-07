@@ -1,37 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dos Attack Tool</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 56px;
+        }
+
+        #commandForm {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .sidenav {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            z-index: 1;
+            top: 56px;
+            left: 0;
+            background-color: #111;
+            padding-top: 20px;
+        }
+
+        .sidenav a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #818181;
+            display: block;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidenav .dropdown-content a {
+            padding-left: 48px;
+        }
+    </style>
 </head>
+
 <body>
-    <p>Home</p>
-    <form id="commandForm">
-        {% csrf_token %}
-        <input type="text" name="command">
-        <button type="submit">Execute</button>
-    </form>
-    <div id="result"></div>
-</body>
-<script>
-    document.getElementById('commandForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        var formData = new FormData(this);
-        fetch('{% url "execute_command" %}', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-            }
-        }).then(response => response.json())
-          .then(data => {
-              if (data.error) {
-                  document.getElementById('result').innerText = 'Error: ' + data.error;
-              } else {
-                  document.getElementById('result').innerText = 'Output: ' + data.result;
-              }
-          });
-    });
+
+    <div class="bg-primary text-light text-left p-2 py-2 fixed-top">
+        <h3>DoS Attack</h3>
+    </div>
+
+
+    <div class="sidenav">
+        <a href="#">Attack</a>
+        <a href="#">Settings</a>
+        <div class="dropdown">
+            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                Scan
+            </a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <a class="dropdown-item" href="#">Public Scan</a>
+                <a class="dropdown-item" href="#">Local Scan</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <form id="commandForm" class="text-center">
+            {% csrf_token %}
+            <input type="text" name="command" class="form-control mb-2">
+            <button type="submit" class="btn btn-primary">Execute</button>
+        </form>
+    </div>
+
+    <div id="result" class="text-center mt-3"></div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <script>
+        document.getElementById('commandForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            fetch('{% url "execute_command" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                }
+            }).then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('result').innerText = 'Error: ' + data.error;
+                    } else {
+                        document.getElementById('result').innerText = 'Output: ' + data.result;
+                    }
+                });
+        });
     </script>
+
+</body>
+
 </html>
